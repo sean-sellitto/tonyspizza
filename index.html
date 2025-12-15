@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tony's Pizza</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 500px;
+        margin: auto;
+        padding: 20px;
+        background: #f9f9f9;
+      }
+      h2 {
+        text-align: center;
+        color: #333;
+      }
+      form {
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+      label {
+        display: block;
+        margin-top: 15px;
+        font-weight: bold;
+        color: #555;
+      }
+      input,
+      select,
+      button {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        font-size: 16px;
+      }
+      button {
+        background-color: #ff6f00;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        margin-top: 20px;
+      }
+      button:hover {
+        background-color: #e65c00;
+      }
+      .sold {
+        color: #999;
+      }
+      .success {
+        color: green;
+        font-weight: bold;
+        margin-top: 10px;
+        display: none;
+      }
+      .error {
+        color: red;
+        font-weight: bold;
+        margin-top: 10px;
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Order Pizza</h2>
+    <form id="form">
+      <label for="name">Full Name</label>
+      <input
+        type="text"
+        id="name"
+        name="name"
+        placeholder="Enter your name"
+        required
+        maxlength="50"
+      />
+      <label for="phone">Phone Number</label>
+      <input
+        type="tel"
+        type="number"
+        name="phone"
+        id="phone"
+        placeholder="Enter your phone number"
+        required
+        maxlength="10"
+      />
+      <label for="pizza">Pizza Type</label>
+      <select name="pizza" id="pizza" required>
+        <option>Cheese</option>
+        <option>Pepperoni and Hot Honey</option>
+        <option>Pepperoni, sausage, and banana peppers</option>
+        <option>Buffalo Chicken</option>
+      </select>
+      <label for="qty">Quantity</label>
+      <select name="qty" id="qty" required>
+        <option>1</option>
+        <option>2</option>
+      </select>
+      <label for="times">Pickup Time</label>
+      <select name="timeslot" id="times" required></select>
+      <button>Submit Order</button>
+      <div class="success" id="successMsg">Order submitted successfully!</div>
+      <div class="error" id="errorMsg">
+        Error submitting order. Please try again.
+      </div>
+    </form>
+
+    <script>
+      const phoneInput = document.getElementById("phone");
+      phoneInput.addEventListener("input", () => {
+        phoneInput.value = phoneInput.value.replace(/\D/g, "");
+      });
+
+      const successMsg = document.getElementById("successMsg");
+      const errorMsg = document.getElementById("errorMsg");
+      const timesSelect = document.getElementById("times");
+
+      // Function to load the time slots from the backend
+      async function loadTimeSlots() {
+        timesSelect.innerHTML = ""; // Clear old options
+        const slots = await fetch(
+          "https://script.google.com/macros/s/AKfycbzEi7_rt01svZuMCsr8hb3fmtCkoslQb4eL_WZ0O_A-bsg5Uki7xgHSuLof_VV1VCwEZg/exec"
+        ).then((r) => r.json());
+        slots.forEach((s) => {
+          const opt = document.createElement("option");
+          opt.value = s.slot;
+          opt.textContent =
+            s.available > 0
+              ? `${s.slot} (${s.available} left)`
+              : `${s.slot} — Sold Out`;
+          opt.disabled = s.available <= 0;
+          timesSelect.appendChild(opt);
+        });
+      }
+
+      // Initial load of time slots
+      loadTimeSlots();
+
+      document.getElementById("form").onsubmit = async (e) => {
+        e.preventDefault();
+        const data = Object.fromEntries(new FormData(e.target));
+
+        try {
+          const res = await fetch(
+            "https://script.google.com/macros/s/AKfycbzEi7_rt01svZuMCsr8hb3fmtCkoslQb4eL_WZ0O_A-bsg5Uki7xgHSuLof_VV1VCwEZg/exec",
+            {
+              method: "POST",
+              body: JSON.stringify(data),
+            }
+          );
+          const r = await res.json();
+
+          if (r.success) {
+            successMsg.style.display = "block";
+            errorMsg.style.display = "none";
+            e.target.reset(); // Clear all input fields
+            await loadTimeSlots(); // Refresh time slots to show sold-out changes
+          } else {
+            successMsg.style.display = "none";
+            errorMsg.style.display = "block";
+          }
+        } catch (err) {
+          successMsg.style.display = "none";
+          errorMsg.style.display = "block";
+          console.error(err);
+        }
+      };
+    </script>
+  </body>
+</html>
