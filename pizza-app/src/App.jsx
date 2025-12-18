@@ -1,130 +1,64 @@
-import { useState, useEffect } from "react";
-import { supabase } from "./supabaseClient";
+import { useEffect, useState } from "react";
+import { fetchTimeSlots } from "./api/timeSlots";
+import { createOrder } from "./api/orders";
+import PizzaOrderForm from "./components/PizzaOrderForm";
 
-const pizzaOptions = ["Pepperoni", "Cheese", "Buffalo Chicken"];
-
-function App() {
-  const [customerName, setCustomerName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [email, setEmail] = useState("");
-  const [pizzaType, setPizzaType] = useState(pizzaOptions[0]);
-  const [quantity, setQuantity] = useState(1);
-  const [timeslot, setTimeslot] = useState("");
+export default function App() {
   const [timeSlots, setTimeSlots] = useState([]);
   const [message, setMessage] = useState("");
 
-  // Fetch all timeslots
+  const [formData, setFormData] = useState({
+    customerName: "",
+    phone: "",
+    email: "",
+    pizzaType: "Pepperoni",
+    quantity: 1,
+    timeslot: "",
+  });
+
   useEffect(() => {
-    const fetchTimeSlots = async () => {
-      const { data, error } = await supabase.from("timeSlots").select("*");
-      console.log("Supabase data:", data);
-      console.log("Supabase error:", error);
-      if (error) {
-        console.error("Error fetching timeSlots:", error);
-      } else {
+    async function loadTimeSlots() {
+      const { data, error } = await fetchTimeSlots();
+      if (!error && data.length > 0) {
         setTimeSlots(data);
-        if (data.length > 0) setTimeslot(data[0].id); // set default selection
+        setFormData((prev) => ({ ...prev, timeslot: data[0].id }));
       }
-    };
-    fetchTimeSlots();
+    }
+    loadTimeSlots();
   }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { data, error } = await supabase.from("orders").insert([
-      {
-        customer_name: customerName,
-        phone,
-        email,
-        pizza_type: pizzaType,
-        quantity,
-        timeslot_id: timeslot,
-        status: "pending",
-      },
-    ]);
+
+    const { error } = await createOrder({
+      customer_name: formData.customerName,
+      phone: formData.phone,
+      email: formData.email,
+      pizza_type: formData.pizzaType,
+      quantity: formData.quantity,
+      timeslot_id: formData.timeslot,
+      status: "pending",
+    });
+
     if (error) {
       setMessage("Error: " + error.message);
     } else {
       setMessage("Order submitted successfully!");
-      // Reset form
-      setCustomerName("");
-      setPhone("");
-      setEmail("");
-      setPizzaType(pizzaOptions[0]);
-      setQuantity(1);
-      if (timeSlots.length > 0) setTimeslot(timeSlots[0].id);
     }
   };
 
   return (
     <div style={{ padding: "2rem" }}>
-      <h1>Pizza Order Form</h1>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Name: </label>
-          <input
-            value={customerName}
-            onChange={(e) => setCustomerName(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label>Phone: </label>
-          <input
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label>Email: </label>
-          <input
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label>Pizza Type: </label>
-          <select
-            value={pizzaType}
-            onChange={(e) => setPizzaType(e.target.value)}
-          >
-            {pizzaOptions.map((p, idx) => (
-              <option key={idx} value={p}>
-                {p}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label>Quantity: </label>
-          <select
-            value={quantity}
-            onChange={(e) => setQuantity(Number(e.target.value))}
-          >
-            <option value={1}>1</option>
-            <option value={2}>2</option>
-          </select>
-        </div>
-        <div>
-          <label>Timeslot: </label>
-          <select
-            value={timeslot}
-            onChange={(e) => setTimeslot(Number(e.target.value))}
-          >
-            {timeSlots.map((ts) => (
-              <option key={ts.id} value={ts.id}>
-                {ts.slot}
-              </option>
-            ))}
-          </select>
-        </div>
-        <button type="submit">Submit Order</button>
-      </form>
+      <h1>Tony's Pizza Order Form</h1>
+
+      <PizzaOrderForm
+        formData={formData}
+        setFormData={setFormData}
+        timeSlots={timeSlots}
+        onSubmit={handleSubmit}
+      />
+
       {message && <p>{message}</p>}
     </div>
   );
 }
-
-export default App;
