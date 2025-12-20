@@ -11,6 +11,7 @@ export default function PizzaOrderForm({
   formData,
   setFormData,
   timeSlots,
+  menuItems,
   onSubmit,
 }) {
   return (
@@ -38,11 +39,14 @@ export default function PizzaOrderForm({
 
       <SelectField
         label="Pizza Type"
-        value={formData.pizzaType}
+        value={formData.menuItemId}
         onChange={(e) =>
-          setFormData({ ...formData, pizzaType: e.target.value })
+          setFormData({ ...formData, menuItemId: Number(e.target.value) })
         }
-        options={pizzaOptions}
+        options={menuItems.map((item) => ({
+          label: item.name,
+          value: item.id,
+        }))}
       />
 
       <SelectField
