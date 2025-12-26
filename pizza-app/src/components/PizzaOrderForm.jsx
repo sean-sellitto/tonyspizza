@@ -1,32 +1,69 @@
+import { useState } from "react";
 import InputField from "./InputField";
 import SelectField from "./SelectField";
-
-const pizzaOptions = [
-  { label: "Pepperoni", value: "Pepperoni" },
-  { label: "Cheese", value: "Cheese" },
-  { label: "Buffalo Chicken", value: "Buffalo Chicken" },
-];
 
 export default function PizzaOrderForm({
   formData,
   setFormData,
   timeSlots,
+  menuItems,
   onSubmit,
 }) {
+  const [message, setMessage] = useState("");
+
+  // Validation helpers
+  const validateName = (name) => name.length > 0 && name.length <= 50;
+
+  const validatePhone = (phone) =>
+    /^\+?[0-9]{7,15}$/.test(phone.replace(/\s+/g, ""));
+
+  const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Frontend validation
+    if (!validateName(formData.customerName)) {
+      setMessage("Name must be 1-50 characters.");
+      return;
+    }
+
+    if (!validatePhone(formData.phone)) {
+      setMessage("Phone number is invalid.");
+      return;
+    }
+
+    if (!validateEmail(formData.email)) {
+      setMessage("Email is invalid.");
+      return;
+    }
+
+    // Clear validation message
+    setMessage("");
+
+    // Delegae actual submission to parent
+    onSubmit(e);
+  };
+
   return (
-    <form onSubmit={onSubmit}>
+    <form onSubmit={handleSubmit}>
       <InputField
+        type="text"
+        maxLength={50}
         label="Name"
         value={formData.customerName}
         onChange={(e) =>
           setFormData({ ...formData, customerName: e.target.value })
         }
+        required
       />
 
       <InputField
+        type="tel"
         label="Phone"
         value={formData.phone}
         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+        required
       />
 
       <InputField
@@ -38,11 +75,14 @@ export default function PizzaOrderForm({
 
       <SelectField
         label="Pizza Type"
-        value={formData.pizzaType}
+        value={formData.menuItemId}
         onChange={(e) =>
-          setFormData({ ...formData, pizzaType: e.target.value })
+          setFormData({ ...formData, menuItemId: Number(e.target.value) })
         }
-        options={pizzaOptions}
+        options={menuItems.map((item) => ({
+          label: item.name,
+          value: item.id,
+        }))}
       />
 
       <SelectField
@@ -70,6 +110,7 @@ export default function PizzaOrderForm({
       />
 
       <button type="submit">Submit Order</button>
+      {message && <p className="error">{message}</p>}
     </form>
   );
 }
