@@ -47,7 +47,7 @@ export default function App() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const { error } = await createOrder({
+    const { data, error } = await createOrder({
       customer_name: formData.customerName,
       phone: formData.phone,
       email: formData.email,

@@ -7,19 +7,19 @@
     "react": {
       "src": "../../node_modules/react/index.js",
       "file": "react.js",
-      "fileHash": "2279ba5f",
+      "fileHash": "de08661a",
       "needsInterop": true
     },
     "react-dom/client": {
       "src": "../../node_modules/react-dom/client.js",
       "file": "react-dom_client.js",
-      "fileHash": "ece85460",
+      "fileHash": "e065b259",
       "needsInterop": true
     },
     "@supabase/supabase-js": {
       "src": "../../node_modules/@supabase/supabase-js/dist/esm/wrapper.mjs",
       "file": "@supabase_supabase-js.js",
-      "fileHash": "3362e7e9",
+      "fileHash": "cb5465d8",
       "needsInterop": false
     }
   },
