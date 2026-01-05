@@ -104,8 +104,14 @@ export default function PizzaOrderForm({
           setFormData({ ...formData, timeslot: Number(e.target.value) })
         }
         options={timeSlots.map((ts) => ({
-          label: ts.slot,
           value: ts.id,
+          label:
+            ts.remaining > 0
+              ? `${ts.slot} - ${ts.remaining} spot${
+                  ts.remaining > 1 ? "s" : ""
+                } left`
+              : `${ts.slot} - SOLD OUT`,
+          disabled: ts.remaining === 0,
         }))}
       />
 

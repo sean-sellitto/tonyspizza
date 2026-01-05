@@ -47,6 +47,11 @@ export default function App() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    console.log("Submitting order with:", {
+      timeslot: formData.timeslot,
+      quantity: formData.quantity,
+    });
+
     const { data, error } = await createOrder({
       customer_name: formData.customerName,
       phone: formData.phone,
