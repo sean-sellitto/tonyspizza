@@ -9,6 +9,7 @@ export default function App() {
   const [timeSlots, setTimeSlots] = useState([]);
   const [message, setMessage] = useState("");
   const [menuItems, setMenuItems] = useState([]);
+  const [success, setSuccess] = useState(false);
 
   const [formData, setFormData] = useState({
     customerName: "",
@@ -64,32 +65,35 @@ export default function App() {
 
     if (error) {
       setMessage("Error: " + error.message);
+      setSuccess(false);
     } else {
       setMessage("Order submitted successfully!");
+      setSuccess(true);
     }
   };
 
   return (
-    <div className="app-container">
-      <div className="card"></div>
-      <h1>Tony's Pizza Order Form</h1>
+    <div className="page">
+      <header className="header">
+        <h1>Tony's Pizza Order Form</h1>
+        <p>Fresh pizza. Limited slots. Order now.</p>
+      </header>
 
-      <PizzaOrderForm
-        formData={formData}
-        setFormData={setFormData}
-        timeSlots={timeSlots}
-        menuItems={menuItems}
-        onSubmit={handleSubmit}
-      />
+      <main className="card">
+        <PizzaOrderForm
+          formData={formData}
+          setFormData={setFormData}
+          timeSlots={timeSlots}
+          menuItems={menuItems}
+          onSubmit={handleSubmit}
+        />
+      </main>
 
-      {message && (
-        <p
-          className={`message ${
-            message.startsWith("Error") ? "error" : "success"
-          }`}
-        >
-          {message}
-        </p>
+      {success && (
+        <div className="success-box">
+          <h2>🎉 Order Confirmed!</h2>
+          <p>Your pizza is being prepared.</p>
+        </div>
       )}
     </div>
   );
