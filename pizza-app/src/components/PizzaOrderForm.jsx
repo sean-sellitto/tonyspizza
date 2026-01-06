@@ -72,51 +72,56 @@ export default function PizzaOrderForm({
         value={formData.email}
         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
       />
+      <div className="field-group">
+        <SelectField
+          label="Pizza Type"
+          value={formData.menuItemId}
+          onChange={(e) =>
+            setFormData({ ...formData, menuItemId: Number(e.target.value) })
+          }
+          options={menuItems.map((item) => ({
+            label: item.name,
+            value: item.id,
+          }))}
+        />
 
-      <SelectField
-        label="Pizza Type"
-        value={formData.menuItemId}
-        onChange={(e) =>
-          setFormData({ ...formData, menuItemId: Number(e.target.value) })
-        }
-        options={menuItems.map((item) => ({
-          label: item.name,
-          value: item.id,
-        }))}
-      />
+        <SelectField
+          label="Quantity"
+          value={formData.quantity}
+          onChange={(e) =>
+            setFormData({ ...formData, quantity: Number(e.target.value) })
+          }
+          options={[
+            { label: "1", value: 1 },
+            { label: "2", value: 2 },
+          ]}
+        />
 
-      <SelectField
-        label="Quantity"
-        value={formData.quantity}
-        onChange={(e) =>
-          setFormData({ ...formData, quantity: Number(e.target.value) })
-        }
-        options={[
-          { label: "1", value: 1 },
-          { label: "2", value: 2 },
-        ]}
-      />
-
-      <SelectField
-        label="Timeslot"
-        value={formData.timeslot}
-        onChange={(e) =>
-          setFormData({ ...formData, timeslot: Number(e.target.value) })
-        }
-        options={timeSlots.map((ts) => ({
-          value: ts.id,
-          label:
-            ts.remaining > 0
-              ? `${ts.slot} - ${ts.remaining} spot${
-                  ts.remaining > 1 ? "s" : ""
-                } left`
-              : `${ts.slot} - SOLD OUT`,
-          disabled: ts.remaining === 0,
-        }))}
-      />
+        <SelectField
+          label="Timeslot"
+          value={formData.timeslot}
+          onChange={(e) =>
+            setFormData({ ...formData, timeslot: Number(e.target.value) })
+          }
+          options={timeSlots.map((ts) => ({
+            value: ts.id,
+            label:
+              ts.remaining === 0
+                ? `${ts.slot} — SOLD OUT`
+                : `${ts.slot} — ${ts.remaining} spots left`,
+            disabled: ts.remaining === 0,
+          }))}
+        />
+      </div>
 
       <button type="submit">Submit Order</button>
-      {message && <p className="error">{message}</p>}
+      {message.startsWith("Order submitted") && (
+        <div className="success-box">
+          🍕 Order received! We’ll start cooking.
+        </div>
+      )}
+
+      {message && <p className="form-error">{message}</p>}
     </form>
   );
 }
