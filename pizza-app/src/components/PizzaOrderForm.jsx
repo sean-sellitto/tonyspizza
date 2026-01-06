@@ -23,7 +23,7 @@ export default function PizzaOrderForm({
     e.preventDefault();
 
     // Frontend validation
-    if (!validateName(formData.customerName)) {
+    if (!validateName(formData.customer_name)) {
       setMessage("Name must be 1-50 characters.");
       return;
     }
@@ -51,9 +51,9 @@ export default function PizzaOrderForm({
         type="text"
         maxLength={50}
         label="Name"
-        value={formData.customerName}
+        value={formData.customer_name}
         onChange={(e) =>
-          setFormData({ ...formData, customerName: e.target.value })
+          setFormData({ ...formData, customer_name: e.target.value })
         }
         required
       />
@@ -75,9 +75,9 @@ export default function PizzaOrderForm({
       <div className="field-group">
         <SelectField
           label="Pizza Type"
-          value={formData.menuItemId}
+          value={formData.menu_item_id}
           onChange={(e) =>
-            setFormData({ ...formData, menuItemId: Number(e.target.value) })
+            setFormData({ ...formData, menu_item_id: Number(e.target.value) })
           }
           options={menuItems.map((item) => ({
             label: item.name,
@@ -99,9 +99,9 @@ export default function PizzaOrderForm({
 
         <SelectField
           label="Timeslot"
-          value={formData.timeslot}
+          value={formData.timeslot_id}
           onChange={(e) =>
-            setFormData({ ...formData, timeslot: Number(e.target.value) })
+            setFormData({ ...formData, timeslot_id: Number(e.target.value) })
           }
           options={timeSlots.map((ts) => ({
             value: ts.id,
