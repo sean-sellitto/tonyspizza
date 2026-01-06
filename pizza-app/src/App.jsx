@@ -10,7 +10,6 @@ export default function App() {
   const [message, setMessage] = useState("");
   const [menuItems, setMenuItems] = useState([]);
   const [success, setSuccess] = useState(false);
-
   const [formData, setFormData] = useState({
     customerName: "",
     phone: "",
@@ -20,14 +19,18 @@ export default function App() {
     timeslot: "",
   });
 
-  useEffect(() => {
-    async function loadTimeSlots() {
-      const { data, error } = await fetchTimeSlots();
-      if (!error && data.length > 0) {
-        setTimeSlots(data);
-        setFormData((prev) => ({ ...prev, timeslot: data[0].id }));
-      }
+  const loadTimeSlots = async () => {
+    const { data, error } = await fetchTimeSlots();
+    if (!error && data.length > 0) {
+      setTimeSlots(data);
+      setFormData((prev) => ({
+        ...prev,
+        timeslot: data[0]?.id || "",
+      }));
     }
+  };
+
+  useEffect(() => {
     loadTimeSlots();
   }, []);
 
@@ -66,10 +69,22 @@ export default function App() {
     if (error) {
       setMessage("Error: " + error.message);
       setSuccess(false);
-    } else {
-      setMessage("Order submitted successfully!");
-      setSuccess(true);
+      return;
     }
+
+    setMessage("Order submitted successfully!");
+    setSuccess(true);
+
+    setFormData({
+      customerName: "",
+      phone: "",
+      email: "",
+      menuItemId: menuItems[0]?.id || "",
+      quantity: 1,
+      timeslot: "",
+    });
+
+    await loadTimeSlots();
   };
 
   return (
