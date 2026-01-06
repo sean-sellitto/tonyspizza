@@ -1,4 +1,5 @@
 import PizzaOrderForm from "../components/PizzaOrderForm";
+import TimesUpPage from "./TimesUpPage";
 import { useState, useEffect } from "react";
 import { fetchTimeSlots } from "../api/timeSlots";
 import { fetchMenuItems } from "../api/menu";
@@ -8,21 +9,32 @@ export default function PizzaOrderFormPage() {
   const [timeSlots, setTimeSlots] = useState([]);
   const [menuItems, setMenuItems] = useState([]);
   const [formData, setFormData] = useState({
-    customerName: "",
+    customer_name: "",
     phone: "",
     email: "",
-    menuItemId: "",
+    menu_item_id: "",
+    timeslot_id: "",
     quantity: 1,
-    timeslot: "",
   });
   const [success, setSuccess] = useState(false);
   const [message, setMessage] = useState("");
+
+  // --- Ordering cutoff logic ---
+  const now = new Date();
+  const day = now.getDay(); // 0 = Sunday, 1 = Monday ... 5 = Friday
+  const hour = now.getHours();
+
+  const orderingClosed =
+    (day === 5 && hour >= 12) || // Friday after noon
+    day === 6 || // Saturday
+    day === 0 || // Sunday
+    (day === 1 && hour < 8); // Monday before 8am
 
   const loadTimeSlots = async () => {
     const { data, error } = await fetchTimeSlots();
     if (!error && data.length > 0) {
       setTimeSlots(data);
-      setFormData((prev) => ({ ...prev, timeslot: data[0].id }));
+      setFormData((prev) => ({ ...prev, timeslot_id: data[0].id }));
     }
   };
 
@@ -30,7 +42,7 @@ export default function PizzaOrderFormPage() {
     const { data, error } = await fetchMenuItems();
     if (!error && data.length > 0) {
       setMenuItems(data);
-      setFormData((prev) => ({ ...prev, menuItemId: data[0].id }));
+      setFormData((prev) => ({ ...prev, menu_item_id: data[0].id }));
     }
   };
 
@@ -51,12 +63,12 @@ export default function PizzaOrderFormPage() {
       setMessage("Order submitted successfully!");
       setSuccess(true);
       setFormData({
-        customerName: "",
+        customer_name: "",
         phone: "",
         email: "",
-        menuItemId: menuItems[0]?.id || "",
+        menu_item_id: menuItems[0]?.id || "",
         quantity: 1,
-        timeslot: timeSlots[0]?.id || "",
+        timeslot_id: timeSlots[0]?.id || "",
       });
       await loadTimeSlots(); // refresh available slots
     }
@@ -70,13 +82,17 @@ export default function PizzaOrderFormPage() {
       </header>
 
       <main className="card">
-        <PizzaOrderForm
-          formData={formData}
-          setFormData={setFormData}
-          timeSlots={timeSlots}
-          menuItems={menuItems}
-          onSubmit={handleSubmit}
-        />
+        {orderingClosed ? (
+          <TimesUpPage />
+        ) : (
+          <PizzaOrderForm
+            formData={formData}
+            setFormData={setFormData}
+            timeSlots={timeSlots}
+            menuItems={menuItems}
+            onSubmit={handleSubmit}
+          />
+        )}
       </main>
 
       {success && (
