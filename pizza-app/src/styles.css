@@ -164,3 +164,58 @@ label {
   flex-direction: column;
   font-weight: 600;
 }
+
+/* ---------- Admin Orders Table ---------- */
+
+/* Make card scrollable horizontally on small screens */
+.card {
+  overflow-x: auto;
+  padding: 1.5rem;
+  max-width: 100%;
+  background: var(--card);
+  border-radius: 18px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
+}
+
+/* Table styles */
+.card table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed; /* distribute columns evenly */
+  min-width: 600px; /* prevents columns from squishing too much */
+}
+
+/* Header styles with sticky effect */
+.card th {
+  background-color: #f3f4f6;
+  color: var(--text);
+  font-weight: 600;
+  padding: 0.75rem 0.5rem;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  border-bottom: 2px solid #ddd;
+}
+
+/* Cell styles */
+.card td {
+  padding: 0.75rem 0.5rem;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Optional: alternate row colors for readability */
+.card tbody tr:nth-child(even) {
+  background-color: #f9fafb;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .card th,
+  .card td {
+    padding: 0.5rem 0.25rem;
+    font-size: 0.875rem;
+  }
+}

@@ -23,3 +23,38 @@ export async function createOrder({
 
   return { remaining: data };
 }
+
+export async function fetchOrders() {
+  const { data, error } = await supabase
+    .from("orders")
+    .select(
+      `
+      id,
+      customer_name,
+      phone,
+      email,
+      quantity,
+      status,
+      menu_item:menu_items!orders_menu_item_id_fkey(name),
+      timeslot:time_slots!orders_timeslot_id_fkey(slot)
+      `
+    )
+
+    .order("timeslot_id", { ascending: true });
+
+  if (error) {
+    console.error("Error fetching orders:", error);
+    return [];
+  }
+
+  return data.map((o) => ({
+    id: o.id,
+    customer_name: o.customer_name,
+    phone: o.phone,
+    email: o.email,
+    quantity: o.quantity,
+    status: o.status,
+    menu_item_name: o.menu_item?.name || "Unknown",
+    timeslot_slot: o.timeslot?.slot || "Unknown",
+  }));
+}
