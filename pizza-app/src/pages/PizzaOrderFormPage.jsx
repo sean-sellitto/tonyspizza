@@ -87,7 +87,49 @@ export default function PizzaOrderFormPage() {
           <TimesUpPage />
         ) : (
           <>
-            <section className="pizza-description">
+            <section className="info-section ordering-instructions">
+              <h2>🍕 How Ordering Works</h2>
+              <ul>
+                <li>
+                  Each time slot can handle up to{" "}
+                  <strong>2 pizzas total</strong>
+                </li>
+                <li>
+                  You may order <strong>1 or 2 pizzas</strong> per order
+                </li>
+                <li>Availability updates in real time</li>
+              </ul>
+
+              <h3>🕒 Choosing a Time Slot</h3>
+              <ul>
+                <li>
+                  <strong>2 spots left</strong> → order 1 or 2 pizzas
+                </li>
+                <li>
+                  <strong>1 spot left</strong> → order 1 pizza only
+                </li>
+                <li>
+                  <strong>Sold out</strong> → slot unavailable
+                </li>
+              </ul>
+            </section>
+            <section className="info-section payment-info">
+              <h2>💳 Payment Information</h2>
+              <ul>
+                <li>
+                  <strong>Venmo:</strong> @Tony-Ratliff-3
+                </li>
+                <li>
+                  Please include your <strong>name and time slot</strong> in the
+                  Venmo note
+                </li>
+                <li>
+                  <strong>Cash</strong> accepted at pickup
+                </li>
+              </ul>
+            </section>
+
+            <section className="info-section pizza-description">
               <h2>🍕 Our Pizzas</h2>
 
               <p>

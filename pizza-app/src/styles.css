@@ -220,26 +220,31 @@ label {
   }
 }
 
-.pizza-description {
+.info-section {
   margin-bottom: 1.5rem;
   padding-bottom: 1rem;
   border-bottom: 1px solid #eee;
 }
 
-.pizza-description h2 {
-  margin-bottom: 0.5rem;
+.info-section h2 {
+  margin-bottom: 0.25rem; /* tight header spacing */
 }
 
-.pizza-description p {
-  margin-bottom: 0.75rem;
+.info-section h3 {
+  margin-bottom: 0.25rem;
+}
+
+.info-section p {
+  margin-bottom: 0.5rem;
   color: #555;
 }
 
-.pizza-description ul {
+.info-section ul {
   padding-left: 1.2rem;
-  margin: 0;
+  margin-top: 0.25rem; /* key fix */
+  margin-bottom: 0;
 }
 
-.pizza-description li {
+.info-section li {
   margin-bottom: 0.4rem;
 }
