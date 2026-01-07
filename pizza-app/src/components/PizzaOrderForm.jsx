@@ -8,6 +8,7 @@ export default function PizzaOrderForm({
   timeSlots,
   menuItems,
   onSubmit,
+  backendMessage,
 }) {
   const [message, setMessage] = useState("");
 
@@ -122,6 +123,15 @@ export default function PizzaOrderForm({
       )}
 
       {message && <p className="form-error">{message}</p>}
+      {backendMessage && (
+        <p
+          className={`form-error ${
+            backendMessage.startsWith("Order submitted") ? "success-box" : ""
+          }`}
+        >
+          {backendMessage}
+        </p>
+      )}
     </form>
   );
 }
