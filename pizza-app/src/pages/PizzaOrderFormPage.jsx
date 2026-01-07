@@ -57,10 +57,11 @@ export default function PizzaOrderFormPage() {
     const { data, error } = await createOrder(formData);
 
     if (error) {
-      setMessage("Error: " + error);
+      setMessage(error);
       setSuccess(false);
+      return;
     } else {
-      setMessage("Order submitted successfully!");
+      //setMessage("Order submitted successfully!");
       setSuccess(true);
       setFormData({
         customer_name: "",
@@ -85,13 +86,46 @@ export default function PizzaOrderFormPage() {
         {orderingClosed ? (
           <TimesUpPage />
         ) : (
-          <PizzaOrderForm
-            formData={formData}
-            setFormData={setFormData}
-            timeSlots={timeSlots}
-            menuItems={menuItems}
-            onSubmit={handleSubmit}
-          />
+          <>
+            <section className="pizza-description">
+              <h2>🍕 Our Pizzas</h2>
+
+              <p>
+                All pizzas are made with one ingredient organic flour, olive oil
+                shipped from a one source organic farm in Italy, the same sauce
+                and cheese that only the best pizza joints in NYC use.
+              </p>
+
+              <ul>
+                <li>
+                  <strong>Cheese</strong> – Classic cheese pizza
+                </li>
+                <li>
+                  <strong>Pepperoni</strong> – Cup and char pepperoni with hot
+                  honey sauce
+                </li>
+                <li>
+                  <strong>Pepperoni, Sausage, Bananna Peppers</strong> – Cup and
+                  char pepperoni, sausage, and banana peppers with hot honey
+                  sauce
+                </li>
+                <li>
+                  <strong>Supreme</strong> – Flavor bomb of finely chopped
+                  pepperoni, onion, green pepper, and sausage combined to make
+                  one bold flavor.
+                </li>
+              </ul>
+            </section>
+
+            <PizzaOrderForm
+              formData={formData}
+              setFormData={setFormData}
+              timeSlots={timeSlots}
+              menuItems={menuItems}
+              onSubmit={handleSubmit}
+              backendMessage={message}
+            />
+          </>
         )}
       </main>
 
