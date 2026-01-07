@@ -117,6 +117,13 @@ export default function PizzaOrderFormPage() {
               <h2>💳 Payment Information</h2>
               <ul>
                 <li>
+                  <strong> Each pizza is $20</strong>
+                </li>
+                <li>
+                  Payment is accepted via <strong>Venmo</strong> or{" "}
+                  <strong>cash</strong>
+                </li>
+                <li>
                   <strong>Venmo:</strong> @Tony-Ratliff-3
                 </li>
                 <li>
