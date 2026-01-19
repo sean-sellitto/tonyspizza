@@ -3,6 +3,7 @@ import InputField from "./InputField";
 import SelectField from "./SelectField";
 
 export default function PizzaOrderForm({
+  orderDates,
   formData,
   setFormData,
   timeSlots,
@@ -48,6 +49,20 @@ export default function PizzaOrderForm({
 
   return (
     <form onSubmit={handleSubmit}>
+      <SelectField
+        label="Order Dates"
+        value={formData.order_date_id}
+        onChange={(e) =>
+          setFormData({ ...formData, order_date_id: e.target.value })
+        }
+        options={[
+          { label: "Select a date", value: "", disabled: true },
+          ...orderDates.map((date) => ({
+            label: new Date(date.order_date).toLocaleDateString(),
+            value: String(date.id),
+          })),
+        ]}
+      />
       <InputField
         type="text"
         maxLength={50}
