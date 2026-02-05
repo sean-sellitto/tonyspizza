@@ -8,17 +8,6 @@ export async function createOrder({
   email,
   menu_item_id,
 }) {
-  // Log BEFORE calling supabase
-  console.log("PAYLOAD BEING SENT:", {
-    p_customer_name: customer_name,
-    p_phone: phone,
-    p_email: email,
-    p_menu_item_id: menu_item_id,
-    p_timeslot_id: timeslot_id,
-    p_quantity: quantity,
-  });
-  console.log("timeslot_id type:", typeof timeslot_id);
-  console.log("timeslot_id value:", timeslot_id);
   const { data, error } = await supabase.rpc("create_order_safe", {
     p_customer_name: customer_name,
     p_phone: phone,

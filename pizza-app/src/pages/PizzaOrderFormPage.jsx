@@ -40,7 +40,7 @@ export default function PizzaOrderFormPage() {
       setTimeSlots(data);
       setFormData((prev) => ({
         ...prev,
-        timeslot_id: data[0].time_slot_instance_id,
+        timeslot_id: data[0].id,
       }));
     } else {
       setTimeSlots([]);

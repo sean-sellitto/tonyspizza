@@ -22,7 +22,6 @@ export default function PizzaOrderForm({
   const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   const handleSubmit = async (e) => {
-    console.log("ERROR: ", e);
     e.preventDefault();
 
     // Frontend validation
@@ -58,10 +57,13 @@ export default function PizzaOrderForm({
         }
         options={[
           { label: "Select a date", value: "", disabled: true },
-          ...orderDates.map((date) => ({
-            label: new Date(date.order_date).toLocaleDateString(),
-            value: String(date.id),
-          })),
+          ...orderDates.map((date) => {
+            const [year, month, day] = date.order_date.split("T")[0].split("-");
+            return {
+              label: `${month}/${day}/${year.slice(2)}`,
+              value: String(date.id),
+            };
+          }),
         ]}
       />
       <InputField
@@ -113,7 +115,6 @@ export default function PizzaOrderForm({
             { label: "2", value: 2 },
           ]}
         />
-
         <SelectField
           label="Timeslot"
           value={formData.timeslot_id || ""}

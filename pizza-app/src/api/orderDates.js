@@ -9,6 +9,5 @@ export async function fetchOrderDates() {
     .gte("order_date", today)
     .order("order_date");
 
-  console.log("FETCH DATES: ", data, today);
   return { data, error };
 }
