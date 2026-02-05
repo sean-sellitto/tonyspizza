@@ -32,15 +32,19 @@ export async function fetchOrders() {
       id,
       customer_name,
       phone,
-      email,
       quantity,
       status,
-      menu_item:menu_items!orders_menu_item_id_fkey(name),
-      timeslot:time_slots!orders_timeslot_id_fkey(slot)
+      created_at,
+      time_slot_instances!fk_orders_time_slot (
+        id,
+        order_dates!time_slot_instances_order_date_id_fkey ( order_date ),
+        time_slots!time_slot_instances_time_slot_id_fkey ( slot )
+        ),
+      menu_items!orders_menu_item_id_fkey ( name )
       `,
     )
 
-    .order("timeslot_id", { ascending: true });
+    .order("created_at", { ascending: false });
 
   if (error) {
     console.error("Error fetching orders:", error);
@@ -54,7 +58,8 @@ export async function fetchOrders() {
     email: o.email,
     quantity: o.quantity,
     status: o.status,
-    menu_item_name: o.menu_item?.name || "Unknown",
-    timeslot_slot: o.timeslot?.slot || "Unknown",
+    order_date: o.time_slot_instances?.order_dates?.order_date || "Unknown",
+    timeslot_slot: o.time_slot_instances?.time_slots?.slot || "Unknown",
+    menu_item_name: o.menu_items?.name || "Unknown",
   }));
 }
