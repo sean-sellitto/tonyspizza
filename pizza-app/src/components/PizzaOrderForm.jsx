@@ -22,6 +22,7 @@ export default function PizzaOrderForm({
   const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   const handleSubmit = async (e) => {
+    console.log("ERROR: ", e);
     e.preventDefault();
 
     // Frontend validation
@@ -115,9 +116,9 @@ export default function PizzaOrderForm({
 
         <SelectField
           label="Timeslot"
-          value={formData.timeslot_id}
+          value={formData.timeslot_id || ""}
           onChange={(e) =>
-            setFormData({ ...formData, timeslot_id: Number(e.target.value) })
+            setFormData({ ...formData, timeslot_id: e.target.value })
           }
           options={timeSlots.map((ts) => ({
             value: ts.id,
