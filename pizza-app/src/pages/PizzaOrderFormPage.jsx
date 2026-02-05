@@ -1,14 +1,17 @@
 import PizzaOrderForm from "../components/PizzaOrderForm";
 import TimesUpPage from "./TimesUpPage";
 import { useState, useEffect } from "react";
+import { fetchOrderDates } from "../api/orderDates";
 import { fetchTimeSlots } from "../api/timeSlots";
 import { fetchMenuItems } from "../api/menu";
 import { createOrder } from "../api/orders";
 
 export default function PizzaOrderFormPage() {
+  const [orderDates, setOrderDates] = useState([]);
   const [timeSlots, setTimeSlots] = useState([]);
   const [menuItems, setMenuItems] = useState([]);
   const [formData, setFormData] = useState({
+    order_date_id: "",
     customer_name: "",
     phone: "",
     email: "",
@@ -27,14 +30,36 @@ export default function PizzaOrderFormPage() {
   const orderingClosed =
     (day === 5 && hour >= 12) || // Friday after noon
     day === 6 || // Saturday
-    day === 0 || // Sunday
+    //day === 0 || // Sunday
     (day === 1 && hour < 8); // Monday before 8am
 
-  const loadTimeSlots = async () => {
-    const { data, error } = await fetchTimeSlots();
+  const loadTimeSlots = async (orderDateId) => {
+    if (!orderDateId) return;
+    const { data, error } = await fetchTimeSlots(orderDateId);
     if (!error && data.length > 0) {
       setTimeSlots(data);
-      setFormData((prev) => ({ ...prev, timeslot_id: data[0].id }));
+      setFormData((prev) => ({
+        ...prev,
+        timeslot_id: data[0].id,
+      }));
+    } else {
+      setTimeSlots([]);
+      setFormData((prev) => ({
+        ...prev,
+        timeslot_id: "",
+      }));
+    }
+  };
+
+  const loadOrderDates = async () => {
+    const { data, error } = await fetchOrderDates();
+    if (data && data.length > 0) {
+      setOrderDates(data);
+      setFormData((prev) => ({ ...prev, order_date_id: data[0].id }));
+    }
+    if (error) {
+      console.error(error);
+      return;
     }
   };
 
@@ -47,14 +72,28 @@ export default function PizzaOrderFormPage() {
   };
 
   useEffect(() => {
-    loadTimeSlots();
+    loadOrderDates();
     loadMenuItems();
   }, []);
+
+  useEffect(() => {
+    if (!formData.order_date_id) return;
+
+    loadTimeSlots(formData.order_date_id);
+  }, [formData.order_date_id]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const { data, error } = await createOrder(formData);
+    const payload = {
+      ...formData,
+      order_date_id: formData.order_date_id,
+      menu_item_id: Number(formData.menu_item_id),
+      timeslot_id: formData.timeslot_id,
+      quantity: Number(formData.quantity),
+    };
+
+    const { data, error } = await createOrder(payload);
 
     if (error) {
       setMessage(error);
@@ -63,15 +102,14 @@ export default function PizzaOrderFormPage() {
     } else {
       //setMessage("Order submitted successfully!");
       setSuccess(true);
-      setFormData({
+      setFormData((prev) => ({
+        ...prev,
         customer_name: "",
         phone: "",
         email: "",
-        menu_item_id: menuItems[0]?.id || "",
-        quantity: 1,
-        timeslot_id: timeSlots[0]?.id || "",
-      });
-      await loadTimeSlots(); // refresh available slots
+        quantity: "1",
+      }));
+      await loadTimeSlots(formData.order_date_id); // refresh available slots
     }
   };
 
@@ -167,6 +205,7 @@ export default function PizzaOrderFormPage() {
             </section>
 
             <PizzaOrderForm
+              orderDates={orderDates}
               formData={formData}
               setFormData={setFormData}
               timeSlots={timeSlots}

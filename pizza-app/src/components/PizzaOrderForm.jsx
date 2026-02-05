@@ -3,6 +3,7 @@ import InputField from "./InputField";
 import SelectField from "./SelectField";
 
 export default function PizzaOrderForm({
+  orderDates,
   formData,
   setFormData,
   timeSlots,
@@ -48,6 +49,23 @@ export default function PizzaOrderForm({
 
   return (
     <form onSubmit={handleSubmit}>
+      <SelectField
+        label="Order Dates"
+        value={formData.order_date_id}
+        onChange={(e) =>
+          setFormData({ ...formData, order_date_id: e.target.value })
+        }
+        options={[
+          { label: "Select a date", value: "", disabled: true },
+          ...orderDates.map((date) => {
+            const [year, month, day] = date.order_date.split("T")[0].split("-");
+            return {
+              label: `${month}/${day}/${year.slice(2)}`,
+              value: String(date.id),
+            };
+          }),
+        ]}
+      />
       <InputField
         type="text"
         maxLength={50}
@@ -97,12 +115,11 @@ export default function PizzaOrderForm({
             { label: "2", value: 2 },
           ]}
         />
-
         <SelectField
           label="Timeslot"
-          value={formData.timeslot_id}
+          value={formData.timeslot_id || ""}
           onChange={(e) =>
-            setFormData({ ...formData, timeslot_id: Number(e.target.value) })
+            setFormData({ ...formData, timeslot_id: e.target.value })
           }
           options={timeSlots.map((ts) => ({
             value: ts.id,

@@ -42,7 +42,7 @@ export default function AdminOrdersPage() {
                   <td>{o.email}</td>
                   <td>{o.menu_item_name}</td>
                   <td>{o.quantity}</td>
-                  <td>{o.timeslot_slot}</td>
+                  <td>{o.timeslot_slot || "Unknown"}</td>
                 </tr>
               ))}
             </tbody>
