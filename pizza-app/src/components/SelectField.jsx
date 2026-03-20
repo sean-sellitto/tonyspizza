@@ -1,8 +1,9 @@
-export default function SelectField({ label, value, onChange, options }) {
+export default function SelectField({ label, value, onChange, options, id }) {
+  const selectId = id || `select-${label.toLowerCase().replace(/\s+/g, "-")}`;
   return (
-    <div>
-      <label>{label}: </label>
-      <select value={value ?? ""} onChange={onChange}>
+    <div className="form-control">
+      <label htmlFor={selectId}>{label}</label>
+      <select id={selectId} value={value ?? ""} onChange={onChange}>
         {options.map((opt, index) => (
           <option
             key={`${opt.value}-${index}`}
