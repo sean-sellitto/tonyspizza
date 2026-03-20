@@ -1,0 +1,126 @@
+---
+description: Spec-driven development — no assumptions, story spec as source of truth, traceability, file outputs
+alwaysApply: true
+---
+
+# Spec-Driven Development Rules
+
+Enforced across all prompts and agents for this project.
+
+## 1. NO ASSUMPTIONS RULE
+
+If any required information is missing:
+
+- Do NOT invent behavior
+- Do NOT assume requirements
+- Do NOT fill gaps with "reasonable defaults"
+
+Instead:
+
+- Output: `Missing Requirement`
+- Clearly describe what is missing
+- Append to: `docs/requirements/missed-requirements.md`
+
+## 2. SOURCE OF TRUTH RULE
+
+The story spec is the single source of truth.
+
+- Do NOT introduce functionality not defined in the spec
+- Do NOT modify requirements unless explicitly instructed
+- All outputs must map directly to the spec
+
+## 3. STEP ISOLATION RULE
+
+Each step has a strict responsibility:
+
+- Product Spec → defines requirements only
+- UI/UX Design → defines flow, layout, interaction
+- Spec Review → identifies gaps, inconsistencies
+- Implementation Plan → defines execution steps
+- Engineer → implements the plan only
+- Code Review → validates implementation vs spec
+- Testing → validates acceptance criteria
+
+Do NOT perform responsibilities outside the current step.
+
+## 4. NO FEATURE CREEP RULE
+
+- Do NOT add enhancements or "nice-to-have" features
+- Do NOT optimize beyond requirements
+- Do NOT expand scope beyond the story
+
+Only implement what is explicitly defined.
+
+## 5. TRACEABILITY RULE
+
+All work must be traceable:
+
+Requirements → Design → Plan → Implementation → Tests
+
+If something cannot be traced:
+
+- Flag it explicitly
+- Do NOT proceed silently
+
+## 6. FILE OUTPUT RULE
+
+All outputs must be saved to the specified file path.
+
+- Follow exact file paths and naming conventions
+- Do NOT output content outside the designated file
+- Do NOT create extra files unless instructed
+
+## 7. TEMPLATE ENFORCEMENT RULE
+
+When a template is provided:
+
+- Follow it exactly
+- Do NOT change section names
+- Do NOT reorder sections
+- Do NOT omit sections
+
+## 8. EXPLICIT ERROR RULE
+
+If something is unclear, conflicting, or invalid:
+
+- Do NOT proceed silently
+- Explicitly explain the issue
+- Identify the exact conflict or ambiguity
+
+## 9. DETERMINISTIC OUTPUT RULE
+
+Outputs must be:
+
+- Structured
+- Consistent
+- Repeatable
+
+Avoid creativity, variation, or improvisation unless explicitly requested.
+
+## 10. MINIMALISM RULE
+
+- Prefer the simplest valid solution
+- Minimize steps, components, and logic
+- Avoid unnecessary abstractions
+
+## 11. PLAN ADHERENCE RULE (ENGINEER)
+
+When implementing:
+
+- Only execute steps defined in the implementation plan
+- Do NOT reorder, skip, or add steps
+- Do NOT introduce new logic outside the plan
+
+## 12. UI CONSISTENCY RULE
+
+- Every UI element must map to a requirement
+- No UI without purpose
+- No requirement without UI representation (if applicable)
+
+## 13. TEST COVERAGE RULE
+
+Every acceptance criterion must have at least one test.
+
+If missing:
+
+- Flag as incomplete coverage
