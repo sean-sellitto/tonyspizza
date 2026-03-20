@@ -111,7 +111,6 @@ export async function fetchOrders() {
       id,
       customer_name,
       phone,
-      email,
       quantity,
       status,
       created_at,

@@ -280,11 +280,12 @@ export default function PizzaOrderFormPage() {
 
       setMessage("");
       setSuccess(true);
-      setFormData({
+      setFormData((prev) => ({
+        ...prev,
         customer_name: "",
         phone: "",
         email: "",
-      });
+      }));
       setLineItems([]);
       setSubmitConflictSummary([]);
       setSuccessResetToken((prev) => prev + 1);

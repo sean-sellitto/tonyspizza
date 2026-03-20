@@ -1,5 +1,17 @@
 import { supabase } from "../supabaseClient";
 
+export async function fetchOrderDates() {
+  const today = new Date().toISOString().split("T")[0];
+  const { data, error } = await supabase
+    .from("order_dates")
+    .select("id, order_date")
+    .eq("is_active", true)
+    .gte("order_date", today)
+    .order("order_date", { ascending: true });
+
+  return { data: data ?? [], error };
+}
+
 export async function fetchNextOrderDate() {
   const today = new Date().toISOString().split("T")[0];
   const { data, error } = await supabase
@@ -13,7 +25,6 @@ export async function fetchNextOrderDate() {
   if (error) return { data: null, error };
   if (data?.[0]) return { data: data[0], error: null };
 
-  // Fallback for environments with only past active dates.
   const { data: fallbackData, error: fallbackError } = await supabase
     .from("order_dates")
     .select("id, order_date")
@@ -63,11 +74,6 @@ export async function deleteOrderDate(id) {
   return { error };
 }
 
-/**
- * Ensures one time_slot_instances row exists per master time_slots row for this order date.
- * Safe to call repeatedly (idempotent). Run after resolving the active order date so slots exist
- * when the calendar advances to the next pizza-making date.
- */
 export async function ensureTimeSlotInstancesForOrderDate(orderDateId) {
   if (!orderDateId) return { data: null, error: null };
   const { data, error } = await supabase.rpc("ensure_time_slot_instances_for_order_date", {
